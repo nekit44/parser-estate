@@ -1,0 +1,22 @@
+{
+    "name": "webreboot/parser-estate",
+    "authors": [
+        {
+            "name": "Nikita Kobylin",
+            "email": "nekit81@ya.ru"
+        }
+    ],
+    "require": {
+        "php-curl-class/php-curl-class": "^9.10",
+        "imangazaliev/didom": "^2.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "AppParsers\\": "src",
+            "AppParsersTests\\": "test/AppParsersTests"
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.5"
+    }
+}

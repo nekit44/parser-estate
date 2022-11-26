@@ -1,0 +1,9 @@
+version: '3.2'
+services:
+  php-cli:
+    build:
+      context: ./
+      dockerfile: docker/php-cli.docker
+    volumes:
+      - ./:/var/www
+    tty: true

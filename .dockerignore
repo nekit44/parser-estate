@@ -1,0 +1,5 @@
+/var
+.idea
+.phpunit.result.cache
+/.vscode
+/result
