@@ -10,14 +10,14 @@ use DiDom\Document;
 class Pagination implements PaginationInterface
 {
     private Curl $curl;
-    private string $baseDomen;
+    private string $baseDomain;
 
     const PATH_FOR_START = 'real-estate/';
 
-    public function __construct(string $baseDomen, Curl $curl = new Curl())
+    public function __construct(string $baseDomain, Curl $curl = new Curl())
     {
         $this->curl = $curl;
-        $this->baseDomen = $baseDomen;
+        $this->baseDomain = $baseDomain;
     }
 
     /**
@@ -26,7 +26,7 @@ class Pagination implements PaginationInterface
      */
     public function parserPagination(): array
     {
-        $this->curl->get($this->baseDomen . self::PATH_FOR_START);
+        $this->curl->get($this->baseDomain . self::PATH_FOR_START);
         $document = new Document($this->curl->response);
         $url_page_pagination = [];
 
@@ -38,7 +38,7 @@ class Pagination implements PaginationInterface
 
 
         for ($i = 1; $i <= $max; $i++) {
-            $this->curl->get("{$this->baseDomen}real-estate/page/{$i}/#objects");
+            $this->curl->get("{$this->baseDomain}real-estate/page/{$i}/#objects");
             if (!$this->curl->error) {
                 $document = new Document($this->curl->response);
                 $ul_html = $document->find('#objects > div.objects-list.switchable.listview > ul > li');
