@@ -4,9 +4,11 @@ declare(strict_types=1);
 namespace AppParsers\Parsers\Estate;
 
 use AppParsers\Entities\FeaturesEntity;
+use AppParsers\Entities\MapEntity;
 use AppParsers\Entities\ObjectEntity;
 use DiDom\Document;
 use DiDom\Exceptions\InvalidSelectorException;
+
 
 
 class Page extends Parser
@@ -16,9 +18,9 @@ class Page extends Parser
      * @return ObjectEntity
      * @throws InvalidSelectorException
      */
-    public function parser($document): ObjectEntity
+    public function parser($html): ObjectEntity
     {
-        $document = new Document($document);
+        $document = new Document($html);
         $objectEntity = new ObjectEntity();
         if ($name = $document->first('div.main-holder > div.container.object > h1'))
             $objectEntity->setName($name->text());
@@ -35,9 +37,9 @@ class Page extends Parser
             $objectEntity->setType($type->text());
         if ($rooms = $document->first('div.params > div.rooms > span.value'))
             $objectEntity->setRooms($rooms->text());
-        if ($livingSpace = $document->first('div.params > div.square > span.value')){
+        if ($livingSpace = $document->first('div.params > div.square > span.value')) {
             $liv = $livingSpace->html();
-            $liv = strip_tags(str_replace('<br>','-', $liv));
+            $liv = strip_tags(str_replace('<br>', '-', $liv));
             $objectEntity->setLivingSpace($liv);
         }
         if ($compDate = $document->first('div.params > div.finish > span.value'))
@@ -49,16 +51,20 @@ class Page extends Parser
             $img_arr = $this->getImage($img_html);
             $objectEntity->setImages($img_arr);
         }
-        if ($features = $document->find('div.page_content > div.features')){
-            foreach ($features as $feature){
+        if ($features = $document->find('div.page_content > div.features')) {
+            foreach ($features as $feature) {
                 $name = $feature->first('h3')->text();
                 $values = $feature->find('ul > li');
                 $arr = [];
-                foreach ($values as $value){
+                foreach ($values as $value) {
                     $arr[] = $value->text();
                 }
                 $objectEntity->setFeatures(new FeaturesEntity($name, $arr));
             }
+        }
+        $nav = $document->first('div.navigation_wrapper > ul > li:nth-child(2)');
+        if ($nav){
+            $objectEntity->setMapCoords($this->getMapParams($nav->attr('onclick')));
         }
 
         return $objectEntity;
@@ -106,5 +112,17 @@ class Page extends Parser
         }
 
         return '';
+    }
+
+    private function getMapParams($nav): MapEntity
+    {
+        $lat = null;
+        $lng = null;
+        $str = str_replace(['toggleObjectPanorama(true,',')'],'',$nav);
+        $exp = explode(',', $str);
+        if (isset($exp[1])){
+          list($lat, $lng) = $exp;
+        }
+       return new MapEntity($lat, $lng);
     }
 }

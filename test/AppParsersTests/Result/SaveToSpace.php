@@ -30,6 +30,8 @@ class SaveToSpace extends TestCase implements SaveTo
         $this->assertEquals('18500000', $json->price);
         $this->assertEquals('2+1', $json->rooms);
         $this->assertEquals('Apartment', $json->type);
+        $this->assertEquals('36.5489160921591', $json->map_coords->lat);
+        $this->assertEquals('32.05607806428894', $json->map_coords->lng);
         $this->assertIsArray($json->images);
 
     }

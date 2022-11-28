@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace AppParsers\Entities;
 
+use AppParsers\Entities\MapEntity;
+
 class ObjectEntity
 {
     private ?string $name = null;
@@ -19,6 +21,15 @@ class ObjectEntity
     private array $images = [];
     private ?string $description = null;
     private array $features = [];
+    private MapEntity $map_coords;
+
+    /**
+     * @param array $map_coords
+     */
+    public function setMapCoords(MapEntity $map_coords): void
+    {
+        $this->map_coords = $map_coords;
+    }
 
     /**
      * @param string $name
@@ -170,7 +181,10 @@ class ObjectEntity
                'list' => $feature->getList()
             ];
         }
-
+        $result['map_coords'] = [
+           'lat' => $this->map_coords->getLat(),
+           'lng' => $this->map_coords->getLng(),
+        ];
         return json_encode($result, JSON_UNESCAPED_UNICODE);
     }
 }
